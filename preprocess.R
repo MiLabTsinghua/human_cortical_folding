@@ -1,3 +1,8 @@
+suppressMessages(library(data.table))
+suppressMessages(library(dplyr))
+suppressMessages(library(Seurat))
+suppressMessages(library(batchelor))
+
 ### merge & SCT norm
 t <- read.delim('../Filtered_cell_metadata_23rd_Jan_2024.csv',sep = ',')
 t$location <- unlist(lapply(t[,1], function(item) strsplit(item, split = '[_]')[[1]][3]))
