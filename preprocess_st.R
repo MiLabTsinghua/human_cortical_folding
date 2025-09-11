@@ -14,10 +14,8 @@ s <- SCTransform(s, assay = 'Spatial', new.assay.name = 'SCT', vars.to.regress =
 ### format
 get_spatial_sob <- function(s, tp) {
     ### prepare sob
-    sob_sp <- s
-    sob_sp$unsup_layer_cl2r <- unlist(lapply(sob_sp$unsup_layer_cl2, function(item) strsplit(item, '[_]')[[1]][1]))
+    s$unsup_layer_cl2r <- unlist(lapply(s$unsup_layer_cl2, function(item) strsplit(item, '[_]')[[1]][1]))
     # filter sob
-    s <- sob_sp
     if (tp == 'GW11') {
         s <- subset(s, cells = colnames(s)[s@images$slice1@coordinates$col < 100])
         anglist <- lapply(1: nrow(s@meta.data), function(i) {
