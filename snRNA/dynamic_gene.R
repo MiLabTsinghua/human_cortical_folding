@@ -8,7 +8,7 @@ s2 <- subset(s2, features = genelist)
 hvglist <- lapply(unique(s2$batch), function(b) {
     s2 <- subset(s2, batch == b)
     DefaultAssay(s2) <- 'RNA'
-    s2 <- FindVariableFeatures(s2, nfeatures = 5000, assay = 'RNA') # 3000 -> 7000, 2000 -> 4869; ver1 3000
+    s2 <- FindVariableFeatures(s2, nfeatures = 5000, assay = 'RNA')
     return(VariableFeatures(s2))
 })
 s2 <- subset(s2, features =  unique(unlist(hvglist)))
