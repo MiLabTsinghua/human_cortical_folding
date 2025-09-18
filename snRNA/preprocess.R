@@ -42,27 +42,4 @@ s <- SCTransform(s, assay = 'RNA', new.assay.name = 'SCT', vars.to.regress = c('
 s <- CellCycleScoring(s, assay = 'SCT', s.features = cc.genes.updated.2019$s.genes, g2m.features = cc.genes.updated.2019$g2m.genes)
 s <- SCTransform(s, assay = 'RNA', new.assay.name = 'SCT', vars.to.regress = c('percent.mt','S.Score','G2M.Score'), verbose = FALSE)
 
-saveRDS(s, 'sob.merge_sct.11-13.rds') #r403_backup
-
-### fastMNN
-sob <- s
-genelist <- unique(unlist(readRDS('hvglist_normdata_3000filtered.11-13.rds')))
-genelist <- genelist[genelist %in% rownames(sob@assays$SCT@data)]
-print(length(genelist))
-print(unique(sob@meta.data$batch))
-mat <- sob@assays$SCT@data[genelist,]
-t <- fastMNN(mat, batch = sob@meta.data$batch, merge.order = list(list(1,3,2), list(4,6,5)))
-
-sob[['mnn']] <- CreateDimReducObject(embedding = reducedDim(t), key = 'mnn_', assay = 'SCT')
-head(sob@reductions$mnn@cell.embeddings)
-# meta info
-sob@meta.data$timepoint <- unlist(lapply(sob@meta.data$batch, function(item) strsplit(item, split = '[_]')[[1]][1]))
-sob@meta.data$location_ori <- unlist(lapply(sob@meta.data$batch, function(item) strsplit(item, split = '[_]')[[1]][2]))
-sob@meta.data$location <- sob@meta.data$location_ori
-sob@meta.data$location[sob@meta.data$location == 'C'] <- 'Sulcus'
-sob@meta.data$location[sob@meta.data$location == 'G'] <- 'Adjacent'
-sob@meta.data$location[sob@meta.data$location == 'D'] <- 'Distant'
-sob@meta.data$location <- factor(sob@meta.data$location, levels = names(collist1), ordered = TRUE)
-# reduction based on mnn
-sob <- RunUMAP(sob, reduction = 'mnn', dims = 1:30) #1:ncol(sob@reductions$mnn@cell.embeddings)
-saveRDS(sob, 'sob.mnn.11-13.rds')
+saveRDS(s, 'sob.merge_sct.11-13.rds')
